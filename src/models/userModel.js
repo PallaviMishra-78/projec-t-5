@@ -5,46 +5,46 @@ const userSchema = new mongoose.Schema(
     {
 
         fname: {
-            type: string,
+            type: String,
             required: true,
             trim:true
         },
         lname: {
-            type: string,
+            type: String,
             required: true,
             trim:true
         },
         email: {
-            type: string,
+            type: String,
             required: true,
             unique: true,
             trim:true
         },
         profileImage: {
-            type: string,
+            type: String,
             required: true,
             trim:true
         }, // s3 link
         phone: {
-            type: string,
+            type: String,
             required: true,
             unique: true,
             trim:true
         },
         password: {
-            type: string,
+            type: String,
             required: true,
             trim:true
         }, // encrypted password
         address: {
             shipping: {
                 street: {
-                    type: string,
+                    type: String,
                     required: true,
                     trim:true
                 },
                 city: {
-                    type: string,
+                    type: String,
                     required: true,
                     trim:true
                 },
@@ -56,17 +56,17 @@ const userSchema = new mongoose.Schema(
             },
             billing: {
                 street: {
-                    type: string,
+                    type: String,
                     required: true,
                     trim:true
                 },
                 city: {
-                    type: string,
+                    type: String,
                     required: true,
                     trim:true
                 },
                 pincode: {
-                    type: number,
+                    type: Number,
                     required: true,
                     trim:true
                 },
