@@ -14,7 +14,7 @@ const createUser = async function (req, res) {
         console.log(requestBody)
         if (vfy.isEmptyObject(requestBody)) return res.status(400).send({ status: false, Message: "Invalid request parameters, Please provide user details" })
         
-        let { fname, lname, email, phone, password, address } = requestBody
+         let { fname, lname, email, phone, password, address } = requestBody   
 
         const files = req.files
 
@@ -34,7 +34,7 @@ const createUser = async function (req, res) {
 
         if (vfy.isEmptyVar(password)) return res.status(400).send({ status: false, Message: "Please provide password" })
 
-        if (!vfy.isValidPassword(password)) return res.status(400).send({ status: false, Message: "Password must contain lenth between 8 - 15 with minimum 1 special character" })
+        if (!vfy.isValidPassword(password)) return res.status(400).send({ status: false, Message: "Password must contain length between 8 - 15 with minimum 1 special character" })
         
 
         if (vfy.isEmptyVar(address)) return res.status(400).send({ status: false, Message: "Please provide address" })
@@ -172,5 +172,132 @@ const login = async (req, res) => {
         })
     }
 }
-module.exports.createUser=createUser
-module.exports.login = login
+const getUser = async function (req, res) {
+    try {
+        let userId = req.params.userId
+        let user = await userModel.findById(userId)
+        if (!user) {
+            return res.status(404).send({ status: false, Message: "No such user found" })
+        }
+        return res.status(200).send({ status: true, data: user })
+    } catch (err) {
+        return res.status(500).send({ status: false, Message: err.message })
+    }
+}
+
+const update = async (req, res) => {
+    try {
+        //  get data from body
+        const data = req.body
+        const files = req.files
+        const userId = req.params.userId
+
+        if (vfy.isEmptyObject(data) && vfy.isEmptyFile(files)) return res.status(400).send({ status: !true, message: " BODY must be required!" })
+
+        //  get User by userID
+        const user = await userModel.findById(userId)
+        if (!user) return res.status(404).send({ status: !true, message: " User data not found!" })
+
+        //  de-structure data
+        let { fname, lname, email, phone, password, address } = data
+
+
+        if (!vfy.isEmptyVar(fname)) {
+            user.fname = fname
+        }
+
+        if (!vfy.isEmptyVar(lname)) {
+            user.lname = lname
+        }
+
+        if (!vfy.isEmptyVar(email)) {
+            if (!vfy.isValidEmail(email)) return res.status(400).send({ status: !true, message: "☹️ Invalid email address!" })
+            let usedEmail = await userModel.findOne({ _id: { $ne: userId }, email });
+            if (usedEmail) return res.status(400).send({ status: false, Message: "This email is already registerd" });
+
+            user.email = email
+        }
+
+        if (!vfy.isEmptyVar(phone)) {
+            if (!vfy.isValidPhone(phone)) return res.status(400).send({ status: !true, message: " Invalid phone number!" })
+            let usedMobileNumber = await userModel.findOne({ _id: { $ne: userId }, phone });
+            if (usedMobileNumber) return res.status(400).send({ status: false, Message: "This Mobile no. is already registerd" });
+
+            user.phone = phone
+        }
+
+        if (!vfy.isEmptyVar(password)) {
+            if (!vfy.isValidPassword(password)) return res.status(400).send({ status: !true, message: " Please enter a valid password [A-Z] [a-z] [0-9] !@#$%^& and length with in 8-15" })
+            const encryptedPassword = await bcrypt.hash(password, saltRounds)
+            user.password = encryptedPassword
+        }
+
+        if (!vfy.isEmptyVar(address)) {
+            let addressObj = vfy.isValidJSONstr(address)
+            if (!addressObj) return res.status(400).send({ status: !true, message: " JSON address NOT in a valid structure, make it in a format!" })
+
+            address = addressObj
+            let {
+                shipping,
+                billing
+            } = address
+
+            // shipping address validation
+            if (!vfy.isEmptyObject(shipping)) {
+                if (!vfy.isEmptyVar(shipping.street)) {
+                    user.address.shipping.street = shipping.street
+                }
+
+                if (!vfy.isEmptyVar(shipping.city)) {
+                    user.address.shipping.city = shipping.city
+                }
+
+                if (!shipping.pincode || isNaN(shipping.pincode)) {
+                    if (!vfy.isPincodeValid(shipping.pincode)) return res.status(400).send({ status: false, Message: "Plz provide a valid pincode for shipping" });
+                    user.address.shipping.pincode = shipping.pincode
+                }
+            }
+
+            // billing address validation
+            if (!vfy.isEmptyObject(billing)) {
+                if (!vfy.isEmptyVar(billing.street)) {
+                    user.address.billing.street = billing.street
+                }
+
+                if (!vfy.isEmptyVar(billing.city)) {
+                    user.address.billing.city = billing.city
+                }
+
+                if (!billing.pincode || isNaN(billing.pincode)) {
+                    if (!vfy.isPincodeValid(billing.pincode)) return res.status(400).send({ status: false, Message: "Plz provide a valid pincode for billing" });
+                    user.address.billing.pincode = billing.pincode
+                }
+            }
+
+        }
+
+        if (!vfy.isEmptyFile(files)) {
+            if (!vfy.acceptFileType(files[0], 'image/jpeg', 'image/png')) return res.status(400).send({ status: false, Message: "we accept jpg, jpeg or png as profile picture only" });
+
+            const profilePicture = await uploadFile(files[0])
+            user.profileImage = profilePicture
+        }
+
+        await user.save()
+
+        res.status(200).send({
+            status: true,
+            Message: "User Updated successfully!",
+            data: user
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            status: !true,
+            Message: error.message
+        })
+    }
+}
+
+module.exports={createUser,login,getUser,update}                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
