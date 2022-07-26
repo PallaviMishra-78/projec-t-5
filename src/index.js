@@ -1,10 +1,10 @@
 const express = require('express');
-const router = require('./routes/route.js');
-const  mongoose = require('mongoose');
+const mongoose = require('mongoose');
+const router = require('./routes/route');
 const app = express();
 const multer = require("multer")
-app.use(multer().any())
 
+app.use(multer().any())
 app.use(express.json());
 
 mongoose.connect("mongodb+srv://pallavi_90:eh5J7PzhYvWnStqo@cluster0.hznxhdd.mongodb.net/group60Database", {
@@ -17,7 +17,7 @@ mongoose.connect("mongodb+srv://pallavi_90:eh5J7PzhYvWnStqo@cluster0.hznxhdd.mon
 app.use('/', router);
 
 app.all('/**', (req, res) => {
-  res.status(404).send({ status: false, message: 'Page Not Found!' });
+  res.status(404).send({ status: false, message: 'The api you requested is not available' });
 });
 
 app.listen(process.env.PORT || 3000, function () {
