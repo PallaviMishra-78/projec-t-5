@@ -74,7 +74,7 @@ const createUser = async function (req, res) {
 
         // ================================= aws file upload here==========================>>
 
-        if (!vfy.acceptFileType(files[0], 'image/jpeg', 'image/png')) return res.status(400).send({ status: false, Message: "we accept jpg, jpeg or png as profile picture only" });
+        if (!vfy.acceptFileType(files[0], 'image/jpeg','image/jpg', 'image/png')) return res.status(400).send({ status: false, Message: "we accept jpg, jpeg or png as profile picture only" });
 
         const profilePicture = await uploadFile(files[0])
 
@@ -247,11 +247,11 @@ const update = async (req, res) => {
 
             // shipping address validation
             if (!vfy.isEmptyObject(shipping)) {
-                if (!vfy.isEmptyVar(shipping.street)) return res.status(400).send({ status: false, Message: "Plz provide a valid street for shipping" })
+                if (vfy.isEmptyVar(shipping.street)) return res.status(400).send({ status: false, Message: "Plz provide a valid street for shipping" })
                 user.address.shipping.street = shipping.street
 
 
-                if (!vfy.isEmptyVar(shipping.city)) return res.status(400).send({ status: false, Message: "Plz provide a valid city for shipping" })
+                if (vfy.isEmptyVar(shipping.city)) return res.status(400).send({ status: false, Message: "Plz provide a valid city for shipping" })
                 user.address.shipping.city = shipping.city
 
 
