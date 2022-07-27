@@ -73,6 +73,28 @@ let checkArrContent = (array, ...isContentArray) => {
     return count == 0 ? true : false
 }
 
+let isValidprice = (value) =>{
+    return /\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})/g.test(value);
+}
+
+const numberValue = (value) => {
+    if (typeof value === "undefined" || value === null || typeof value === "boolean") return false;
+    if (typeof value === "number" && value.toString().trim().length === 0) return false
+    return true;
+};
+  
+const strRegex = (value) => {
+    let strRegex = /^[A-Za-z\s]{0,}[\.,'-]{0,1}[A-Za-z\s]{0,}[\.,'-]{0,}[A-Za-z\s]{0,}[\.,'-]{0,}[A-Za-z\s]{0,}[\.,'-]{0,}[A-Za-z\s]{0,}[\.,'-]{0,}[A-Za-z\s]{0,}$/;
+    if (strRegex.test(value))
+      return true;
+};
+
+const booleanValue = (value) => {
+    if (typeof value === "undefined" || value === null || typeof value === "number" || typeof value === true) return false;
+    if (typeof value === false && value.toString().trim().length === 0) return false;
+    return true;
+  };
+
 
 module.exports = {
     isEmptyObject,
@@ -87,5 +109,9 @@ module.exports = {
     acceptFileType,
     isValidJSONstr,
     isPincodeValid,
-    checkArrContent
+    checkArrContent,
+    isValidprice,
+    numberValue,
+    strRegex,
+    booleanValue
 }
