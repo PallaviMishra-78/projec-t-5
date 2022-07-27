@@ -5,23 +5,30 @@ const productSchema = new mongoose.Schema(
         title: {
             type: String,
             require: true,
-            unique: true
+            unique: true,
+            trim: true
         },
         description: { 
             type: String, 
-            require: true 
+            require: true,
+            trim: true 
         },
         price: { 
             type: Number, 
-            require: true 
+            require: true,
+            trim: true, 
         },       /*valid number/decimal*/
         currencyId: { 
             type: String, 
-            require: true, INR 
+            require: true,
+            default: "INR",
+            trim: true
         },
         currencyFormat: { 
             type: String, 
-            require: true, // Rupee symbol 
+            require: true, 
+            default: "₹",   // Rupee symbol 
+            trim: true
         },
         isFreeShipping: { 
             type: Boolean, 
@@ -29,20 +36,26 @@ const productSchema = new mongoose.Schema(
         },
         productImage: { 
             type: String, 
-            require: true 
+            require: true,
+            trim: true 
         },  // s3 link
         style: { 
-            type: String 
+            type: String,
+            trim: true 
         },
         availableSizes: { 
-            type: Array, 
+            type: Array,
+            trim: true, 
             enum: ["S", "XS", "M", "X", "L", "XXL", "XL"] 
         },
         installments: { 
-            type: Number 
+            type: Number,
+            trim: true,
+            default:0
         },
         deletedAt: { 
-            type: Date 
+            type: Date,
+            default: null
         },
         isDeleted: { 
             type: Boolean, 
@@ -52,3 +65,4 @@ const productSchema = new mongoose.Schema(
     }, { timestamps: true })
 
 module.exports = mongoose.model("Product", userSchema)
+
