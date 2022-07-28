@@ -25,20 +25,30 @@ const createProduct = async (req, res) => {
         if (!vfy.numberValue(price)) return res.status(400).send({ status: false, msg: "Please enter price!" });
 
         if (vfy.isEmptyFile(currencyId)) return res.status(400).send({ status: false, Message: "Please provide product's currencyId" });
+        if (currencyId !== "INR") return res.status(400).send({ status: false, msg: "Please enter currencyId in correct format" })
         if (vfy.isEmptyFile(currencyFormat)) return res.status(400).send({ status: false, Message: "Please provide product's currency Format" });
+        if (currencyFormat !== "₹") return res.status(400).send({ status: false, msg: "Please enter currencyFormat in correct format" })
         if (vfy.isEmptyFile(isFreeShipping)) return res.status(400).send({ status: false, Message: "Please provide product's shipping is free" });
         if (!vfy.booleanValue(isFreeShipping)) return res.status(400).send({ status: false, msg: "Please enter isFreeShipping!" }) 
 
         if (vfy.isEmptyFile(style)) return res.status(400).send({ status: false, Message: "Please provide product's style " });
         if (vfy.isEmptyFile(availableSizes)) return res.status(400).send({ status: false, Message: "Please provide product's available Sizes" });
-
+        let availableSize
+        
+        if (availableSizes) {availableSize = availableSizes.toUpperCase().split(",")
+            for (let i = 0; i < availableSize.length; i++) {
+              if (!(["S", "XS", "M", "X", "L", "XXL", "XL"]).includes(availableSize[i])) {
+                return res.status(400).send({ status: false, message: `Sizes should be ${["S", "XS", "M", "X", "L", "XXL", "XL"]}` })
+              }
+            }
+          }
         if (vfy.isEmptyFile(installments)) return res.status(400).send({ status: false, Message: "Please provide product's available in installments " });
         if (!vfy.numberValue(installments)) return res.status(400).send({ status: false, msg: "Please enter installments!" })
         if (isDeleted === true || isDeleted === "") return res.status(400).send({ status: false, msg: "isDeleted must be false!" })
         if (!vfy.acceptFileType(files[0], 'image/jpeg', 'image/jpg', 'image/png')) return res.status(400).send({ status: false, Message: "we accept jpg, jpeg or png as profile picture only" });
         let productImage = await uploadFile(files[0])
 
-        const productrequestbody = { title, description, price, currencyId, currencyFormat, isFreeShipping, productImage , style, availableSizes, installments, isDeleted }
+        const productrequestbody = { title, description, price, currencyId, currencyFormat, isFreeShipping, productImage , style, availableSizes:availableSize, installments, isDeleted }
         
         const product = await productModel.create(productrequestbody)
 
