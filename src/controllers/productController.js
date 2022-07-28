@@ -129,10 +129,10 @@ const getProductsById = async function(req,res){
         let productId = req.params.productId
         let data = req.body
         let files = req.files
-        if (!productId) return res.status(400).send({ status: false, message: "provide productId" })
+        if (!vfy.productId) return res.status(400).send({ status: false, message: "provide productId" })
         if (!mongoose.isValidObjectId(productId)) return res.status(400).send({ status: false, message: "invalid productId" })
         let checkId = await productModel.findById({ _id: productId })
-        if (!checkId) return res.status(404).send({ status: false, message: "no such product" })
+        if (!vfy.checkId) return res.status(404).send({ status: false, message: "no such product" })
         if (checkId.isDeleted == true) return res.status(404).send({ status: false, message: "product is already deleted" })
 
         if (!(Object.keys(data).length || files)) return res.status(400).send({ status: false, message: "please provide data to update" })
@@ -143,7 +143,7 @@ const getProductsById = async function(req,res){
 
         if (title || typeof title == 'string') {
             //if(title ) return res.status(400).send({ status: false, message: "Title is required." });
-            if (!isValid(title)) return res.status(400).send({ status: false, message: "Title is required." });
+            if (!vfy.isValid(title)) return res.status(400).send({ status: false, message: "Title is required." });
             if (!titleRegex.test(title)) return res.status(400).send({ status: false, message: " Please provide valid title including characters only." });
 
             //checking for duplicate title
@@ -155,13 +155,13 @@ const getProductsById = async function(req,res){
 
         if (description || typeof description == 'string') {
 
-            if (!(isValid(description) || isValidString(description))) return res.status(400).send({ status: false, message: "description is required." });
+            if (!(isValid(description) || vfy.isValidString(description))) return res.status(400).send({ status: false, message: "description is required." });
             updatedata.description = description
         }
         //  if(price == "")  return res.status(400).send({ status: false, message: "Enter a valid value  for price" })
 
         if (price || price == "") {
-            if (!(isValid(price) || isValidPrice(price))) return res.status(400).send({ status: false, message: "price Should be in number only...!" });
+            if (!(isValid(price) || vfy.isValidPrice(price))) return res.status(400).send({ status: false, message: "price Should be in number only...!" });
             updatedata.price = price
         }
 
@@ -179,15 +179,15 @@ const getProductsById = async function(req,res){
 
 
         if (style || typeof style == "string") {
-            if (!isValid(style) || isValidString(style)) return res.status(400).send({ status: false, message: "Style should be valid an does not contain numbers" });
-            if (!titleRegex.test(style)) return res.status(400).send({ status: false, message: " Please provide valid style including characters only." });
+            if (!vfy.isValid(style) || isValidString(style)) return res.status(400).send({ status: false, message: "Style should be valid an does not contain numbers" });
+            if (!vfy.titleRegex.test(style)) return res.status(400).send({ status: false, message: " Please provide valid style including characters only." });
             updatedata.style = style
         }
 
 
         if (installments || typeof installments == "string") {
-            if (!isValidString(installments)) return res.status(400).send({ status: false, message: "Installments should be in numbers" });
-            if (!isValidPrice(installments)) return res.status(400).send({ status: false, message: "Installments should be valid" });
+            if (!vfy.isValidString(installments)) return res.status(400).send({ status: false, message: "Installments should be in numbers" });
+            if (!vfy.isValidPrice(installments)) return res.status(400).send({ status: false, message: "Installments should be valid" });
             updatedata.installments = installments
         }
 
