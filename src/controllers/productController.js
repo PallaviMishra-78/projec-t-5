@@ -3,6 +3,8 @@ const vfy = require('../utility/validation')
 const { uploadFile } = require('../aws.config.js')
 const mongoose = require("mongoose")
 
+//<<<<<<<<<<<<================= Create Products==============>>>>>>>>>>>>>>>//
+
 const createProduct = async (req, res) => {
     try {
         const requestBody = req.body
@@ -30,7 +32,6 @@ const createProduct = async (req, res) => {
         if (vfy.isEmptyFile(style)) return res.status(400).send({ status: false, Message: "Please provide product's style " });
         if (vfy.isEmptyFile(availableSizes)) return res.status(400).send({ status: false, Message: "Please provide product's available Sizes" });
 
-        
         if (vfy.isEmptyFile(installments)) return res.status(400).send({ status: false, Message: "Please provide product's available in installments " });
         if (!vfy.numberValue(installments)) return res.status(400).send({ status: false, msg: "Please enter installments!" })
         if (isDeleted === true || isDeleted === "") return res.status(400).send({ status: false, msg: "isDeleted must be false!" })
@@ -52,20 +53,20 @@ const createProduct = async (req, res) => {
 const getProductsById = async function(req,res){
      try{
           let productId = req.params.productId
-          if(productId){
+          // if(productId){
                if (mongoose.Types.ObjectId.isValid(productId)){
-                    const product = await productModel.findOne( {_id : productId, isDeleted: false}, {isDeleted: 0, _v:0} )
+                    const product = await productModel.findOne( {_id : productId, isDeleted: false})
                     if(product){                     
-                         return res.status(200).send({ Status:!true, Message:"Success", Data: product })
+                         return res.status(200).send({ Status:true, Message:"Success", Data: product })
                     }else{
                          return res.status(404).send({status:false, message: "Product not found"})
                     }
                }else{
                     return res.status(400).send({ status: !true, message: "Product Id is invalid" })
                }
-          }else {
-               return res.status(400).send({ status: !true, message: "Please enter the productId" })
-          }
+          // }else {
+          //      return res.status(400).send({ status: !true, message: "Please enter the productId" })
+          // }
      }catch(error){
           return res.status(500).send({status:false, message: error.message})
      }

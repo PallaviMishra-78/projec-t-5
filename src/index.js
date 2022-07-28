@@ -5,7 +5,8 @@ const app = express();
 const multer = require("multer")
 
 app.use(multer().any())
-app.use(express.json());
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }));
 
 mongoose.connect("mongodb+srv://pallavi_90:eh5J7PzhYvWnStqo@cluster0.hznxhdd.mongodb.net/group60Database", 
   { useNewUrlParser: true }
