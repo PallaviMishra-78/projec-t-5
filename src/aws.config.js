@@ -1,6 +1,6 @@
 const aws = require('aws-sdk');
 
-aws.config.update({
+aws.config.update({                         
     accessKeyId: "AKIAY3L35MCRUJ6WPO6J",
     secretAccessKey: "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",
     region: "ap-south-1"
@@ -36,6 +36,7 @@ let uploadFile = async (file) => {
 
     })
 }
+
 
 module.exports = {
     uploadFile

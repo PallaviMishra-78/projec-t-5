@@ -1,3 +1,4 @@
+
 const express = require("express")
 let router = express.Router()
 let userController = require("../controllers/userController")
@@ -13,7 +14,10 @@ router.put("/user/:userId/profile",authentication, authorization_user, userContr
 
 //<<<<<<<<<<<<<<===============Product API's================>>>>>>>>>>>>>>>//
 
-router.get("/products/:productId", productController.getProductsById)
 router.post('/products', productController.createProduct)
+router.get('/products', productController.getByQuery)
+router.get("/products/:productId", productController.getProductsById)
+router.put('/products/:productId', productController.updateProduct)
+router.delete('/products/:productId', productController.deleteProduct)
 
 module.exports = router;

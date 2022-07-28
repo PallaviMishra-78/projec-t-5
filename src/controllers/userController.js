@@ -20,14 +20,23 @@ const createUser = async function (req, res) {
         const files = req.files
 
         if (vfy.isEmptyFile(files)) return res.status(400).send({ status: false, Message: "Please provide user's profile picture" });
+
         if (vfy.isEmptyVar(fname)) return res.status(400).send({ status: false, Message: "Please provide user's first name" });
+
         if (vfy.isEmptyVar(lname)) return res.status(400).send({ status: false, Message: "Please provide user's last name" });
+
         if (vfy.isEmptyVar(email)) return res.status(400).send({ status: false, Message: "Please provide user's email" });
+
         if (!vfy.isValidEmail(email)) return res.status(400).send({ status: false, Message: "please provide valid email" });
+
         if (vfy.isEmptyVar(phone)) return res.status(400).send({ status: false, Message: "Please provide phone number" });
+
         if (!vfy.isValidPhone(phone)) return res.status(400).send({ status: false, Message: "please provide valid phone number" });
+
         if (vfy.isEmptyVar(password)) return res.status(400).send({ status: false, Message: "Please provide password" });
+
         if (!vfy.isValidPassword(password)) return res.status(400).send({ status: false, Message: "Password must contain lenth between 8 - 15 with minimum 1 special character" });
+
 
         if (vfy.isEmptyVar(address)) return res.status(400).send({ status: false, Message: "Please provide address" })
         const addressObject = vfy.isValidJSONstr(address)
@@ -208,7 +217,7 @@ const update = async (req, res) => {
         if (!user) return res.status(404).send({ status: !true, message: " User data not found!" })
 
         //  de-structure data
-        let { fname, lname, email, phone, password, address } = data
+        let { fname, lname, email, phone, password, address } = data //destructring 
 
         console.log(data)
         if (!vfy.isEmptyVar(fname)) {

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose")
 const moment = require("moment")
 
+//---------------------------------------------------------------------------userValidation------------------------------------------------------------------------//
 let isEmptyObject = function (body) {
     if (!body) return true
     if (Object.keys(body).length == 0) return true;
@@ -49,7 +50,7 @@ let isEmptyFile = (file) => {
 }
 
 const acceptFileType = (file, ...types) => {
-    return types.indexOf(file.mimetype) !== -1 ? true : false
+    return types.indexOf(file.mimetype) !== -1 ? true : false    //ternary opretor [-1 used because don't resived any thing]
 }
 
 const isPincodeValid = function (value) {
@@ -103,8 +104,29 @@ const booleanValue = (value) => {
         return false
     }
 }
+//-----------------------------------------------------//Productvalidation//------------------------------------------------------------------------//
+const isValidRequestBody = function (request) {
+    return Object.keys(request).length > 0;
+}
+const isValidSize = (value) => {
+    if (typeof value === "undefined" || typeof value === "null") return true;
+    if (typeof value === "string" && value.trim().length == 0) return true;
+    if (typeof value === "object" && Object.keys(value).length == 0) return true;
+    return false;
+}
+const isValidString = (String) => {
+    return /\d/.test(String)
+}
 
-
+const isValidPrice = (price) => {
+    return /^[1-9]\d{0,7}(?:\.\d{1,2})?$/.test(price)
+}
+// const isValidSize = (sizes) => {
+//     return ["S", "XS", "M", "X", "L", "XXL", "XL"].includes(sizes);
+// }
+const isValidObjectsId = function (ObjectId) {
+    return mongoose.Types.ObjectId.isValid(ObjectId);
+}
 module.exports = {
     isEmptyObject,
     isEmptyVar,
@@ -123,5 +145,10 @@ module.exports = {
     numberValue,
     strRegex,
     booleanValue,
-    isValid
+    isValid,
+    isValidRequestBody,
+    isValidSize,
+    isValidString,
+    isValidPrice,
+    isValidObjectsId
 }
