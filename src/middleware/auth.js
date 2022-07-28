@@ -11,7 +11,7 @@ const authentication = (req, res, next) => {
        
         token = token.split(' ')[1] // get the 1 index value
         console.log(token)
-        jwt.verify(token,'secret',function(err,decode){
+        jwt.verify(token,'project/productManagementGroup60',function(err,decode){
             if(err){ 
                 return res.status(401).send({ status: false, Message: err.message })
             }else{

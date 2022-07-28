@@ -6,62 +6,62 @@ const productSchema = new mongoose.Schema(
             type: String,
             require: true,
             unique: true,
-            trim:true
+            trim: true
         },
-        description: { 
-            type: String, 
+        description: {
+            type: String,
             require: true,
-            trim:true 
+            trim: true
         },
-        price: { 
-            type: Number, 
+        price: {
+            type: Number,
             require: true,
-            trim:true 
-        },                //*valid number/decimal*
-        currencyId: { 
-            type: String, 
+            trim: true
+        },
+        currencyId: {
+            type: String,
             require: true,
             default: "INR",
-            trim:true 
+            trim: true
         },
-        currencyFormat: { 
-            type: String, 
+        currencyFormat: {
+            type: String,
             require: true,
             default: "₹",
-            trim:true       // Rupee symbol 
+            trim: true
         },
-        isFreeShipping: { 
-            type: Boolean, 
-            default: false 
+        isFreeShipping: {
+            type: Boolean,
+            default: false
         },
-        productImage: { 
-            type: String, 
+        productImage: {
+            type: String,
             require: true,
-            trim:true 
-        },                // s3 link
-        style: { 
-            type: String,
-            trim:true 
+            trim: true
         },
-        availableSizes: { 
+        style: {
             type: String,
-            trim:true,
-            enum: ["S", "XS", "M", "X", "L", "XXL", "XL"] 
+            trim: true
         },
-        installments: { 
+        availableSizes:[{
+            type: Array,
+            trim: true,
+            enum: ["S", "XS", "M", "X", "L", "XXL", "XL"]
+        }],
+        installments: {
             type: Number,
-            trim:true,
-            default: 0  
+            trim: true,
+            default: 0
         },
-        deletedAt: { 
+        deletedAt: {
             type: Date,
-            default: null 
+            default: null
         },
-        isDeleted: { 
-            type: Boolean, 
-            default: false 
+        isDeleted: {
+            type: Boolean,
+            default: false
         }
-        
+
     }, { timestamps: true })
 
 module.exports = mongoose.model("Product", productSchema)

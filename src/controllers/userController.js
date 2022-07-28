@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const saltRounds = 10;
 
 
-//======================== #Post Api {Creat User} ==========================================>>
+//<<<<<<<<<================= #Post Api {Creat User} ====================>>>>>>>>>>>>>
 
 const createUser = async function (req, res) {
     try {
@@ -81,13 +81,15 @@ const createUser = async function (req, res) {
         let usedMobileNumber = await userModel.findOne({ phone });
         if (usedMobileNumber) return res.status(400).send({ status: false, Message: "This Mobile no. is already registerd" });
 
-        // ================================= qws file upload here==========================>>
-        if (!vfy.acceptFileType(files[0], 'image/jpeg', 'image/png')) return res.status(400).send({ status: false, Message: "we accept jpg, jpeg or png as profile picture only" });
+        // ================================= aws file upload here==========================>>
+
+        if (!vfy.acceptFileType(files[0], 'image/jpeg','image/jpg', 'image/png')) return res.status(400).send({ status: false, Message: "we accept jpg, jpeg or png as profile picture only" });
 
         const profilePicture = await uploadFile(files[0])
 
         const encryptedPassword = await bcrypt.hash(password, saltRounds)
         const userrequestBody = { fname, lname, email, phone, profileImage: profilePicture, password: encryptedPassword, address: addressObject }
+
         // create user 
         const newUser = await userModel.create(userrequestBody);
 
@@ -108,10 +110,15 @@ const createUser = async function (req, res) {
 }
 
 
+
+
+//<<<<<<<<<<<=============Login User============>>>>>>>>>//
+
 const login = async (req, res) => {
     try {
         // get data from body
         const data = req.body
+        
         if (vfy.isEmptyObject(data)) return res.status(400).send({ status: !true, message: " Login BODY must be required!" })
 
         //  de-structure data ❤️
@@ -131,7 +138,6 @@ const login = async (req, res) => {
 
         //  vfy the password
         const verify = await bcrypt.compare(password, user.password).catch(_ => {
-            //bcrypt-
 
             console.log(_.message)
             return !true
@@ -139,12 +145,20 @@ const login = async (req, res) => {
 
         if (!verify) return res.status(401).send({ status: !true, message: ` Wrong Email address or Password!` })
 
+        const iat = Date.now()                   // created time
+        const exp = (iat) + (1*60*60*1000)      // expairy time
         //  generate Token one hr
         const Token = jwt.sign({
-            userId: user._id
-        }, 'secret', {
-            expiresIn: '1h'
-        });
+          userId: user._id.toString(),
+          iat: iat,
+          exp: exp
+        }, 
+        "project/productManagementGroup60",
+     //     {
+     //        expiresIn: '1h'
+     //    }
+          );
+
         //console.log(Token.userId)
         //  all good
         res.status(200).send({
@@ -164,6 +178,8 @@ const login = async (req, res) => {
     }
 }
 
+//<<<<<<<<<<<<<==========Get User Details============>>>>>>>>>>>>>>>//
+
 const getUser = async function (req, res) {
     try {
         let userId = req.params.userId
@@ -176,6 +192,8 @@ const getUser = async function (req, res) {
         return res.status(500).send({ status: false, Message: err.message })
     }
 }
+
+//<<<<<<<<<<<<<<================ Upadate User Details =================>>>>>>>>>>>>>>>>//
 
 const update = async (req, res) => {
     try {
@@ -238,11 +256,11 @@ const update = async (req, res) => {
 
             // shipping address validation
             if (!vfy.isEmptyObject(shipping)) {
-                if (!vfy.isEmptyVar(shipping.street)) return res.status(400).send({ status: false, Message: "Plz provide a valid street for shipping" })
+                if (vfy.isEmptyVar(shipping.street)) return res.status(400).send({ status: false, Message: "Plz provide a valid street for shipping" })
                 user.address.shipping.street = shipping.street
 
 
-                if (!vfy.isEmptyVar(shipping.city)) return res.status(400).send({ status: false, Message: "Plz provide a valid city for shipping" })
+                if (vfy.isEmptyVar(shipping.city)) return res.status(400).send({ status: false, Message: "Plz provide a valid city for shipping" })
                 user.address.shipping.city = shipping.city
 
 
