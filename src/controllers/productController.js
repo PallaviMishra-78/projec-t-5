@@ -6,7 +6,7 @@ const mongoose = require("mongoose")
 const createProduct = async (req, res) => {
     try {
         const requestBody = req.body
-        console.log(requestBody)
+        console.log(requestBody) 
         if (vfy.isEmptyObject(requestBody)) return res.status(400).send({ status: false, Message: "Invalid request parameters, Please provide Product details" })
         const { title, description, price, currencyId, currencyFormat, isFreeShipping, style, availableSizes, installments, isDeleted } = requestBody
 
@@ -95,7 +95,7 @@ const getProductsById = async function(req,res){
          }
  
          if (query.name) {
-             if (!isValid(query.name)) return res.status(400).send({ status: false, message: "name should be in string & not empty" })
+             if (!vfy.isValid(query.name)) return res.status(400).send({ status: false, message: "name should be in string & not empty" })
              query.title = query.name
          }
          let less = {}
