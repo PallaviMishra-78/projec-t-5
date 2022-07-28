@@ -1,17 +1,14 @@
-const express = require('express');
-const router = express.Router();
-const controller=require("../controllers/userController")
-const middleware = require('../middleware/auth.js')
+
+const express = require("express")
+let router = express.Router()
+let controller = require("../controllers/userController")
+let {authentication,authorization_user} = require("../middleware/auth")
+
+
 
 router.post('/register', controller.createUser)
-
 router.post('/login', controller.login)
-
-router.get('/user/:userId/profile' , middleware.authentication,middleware.authorization_user,controller.getUser)
-
-router.put('/user/:userId/profile' , middleware.authentication,middleware.authorization_user,controller.update)
-
-
-
+router.get('/user/:userId/profile', authentication, authorization_user, controller.getUser)
+router.put("/user/:userId/profile",authentication, authorization_user, controller.update)
 
 module.exports = router;

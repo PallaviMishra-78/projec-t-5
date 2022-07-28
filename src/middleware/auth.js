@@ -47,9 +47,8 @@ const authorization_user = async (req, res, next) => {
 }
 
 
-
 module.exports = {
     authentication,
-    authorization_user,
-    
+    authorization_user   
+
 }

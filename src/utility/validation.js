@@ -49,7 +49,7 @@ let isEmptyFile = (file) => {
 }
 
 const acceptFileType = (file, ...types) => {
-    return types.indexOf(file.mimetype) !== -1 ? true : false
+    return types.indexOf(file.mimetype) !== -1 ? true : false    //ternary opretor [-1 used because don't resived any thing]
 }
 
 const isPincodeValid = function (value) {
