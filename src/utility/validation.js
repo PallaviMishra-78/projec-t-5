@@ -127,6 +127,12 @@ const isValidPrice = (price) => {
 const isValidObjectsId = function (ObjectId) {
     return mongoose.Types.ObjectId.isValid(ObjectId);
 }
+
+const validQuantity = function isInteger(value) {
+    if(value < 1) return false
+     if(value % 1 == 0 ) return true
+}
+
 module.exports = {
     isEmptyObject,
     isEmptyVar,
@@ -150,5 +156,6 @@ module.exports = {
     isValidSize,
     isValidString,
     isValidPrice,
-    isValidObjectsId
+    isValidObjectsId,
+    validQuantity
 }
