@@ -3,6 +3,7 @@ let router = express.Router()
 let userController = require("../controllers/userController")
 let productController = require("../controllers/productController")
 let cartController = require("../controllers/cartController")
+let orderController = require("../controllers/orderController")
 let {authentication,authorization_user} = require("../middleware/auth")
 
 
@@ -24,9 +25,14 @@ router.delete('/products/:productId', productController.deleteProduct)
 
 //<<<<<<<<<<<<<<===============\Cart API's================>>>>>>>>>>>>>>>//
 
-router.post('/usercarts/:userId/cart',authentication, authorization_user,cartController.createCart)
-router.put('/usercarts/:userId/cart', authentication, authorization_user,cartController.updateCart )
+router.post('/users/:userId/cart',authentication, authorization_user,cartController.createCart)
+router.put('/users/:userId/cart', authentication, authorization_user,cartController.updateCart )
 router.get('/users/:userId/cart',authentication, authorization_user, cartController.getCart)
 router.delete('/users/:userId/cart',authentication, authorization_user, cartController.deleteCart)
+
+//<<<<<<<<<<<<<<=================Order API's================>>>>>>>>>>>>>>>//
+
+router.post('/users/:userId/orders',authentication, authorization_user,orderController.createOrder)
+router.put('/users/:userId/orders',authentication, authorization_user,orderController.updateOrder)
 
 module.exports = router;

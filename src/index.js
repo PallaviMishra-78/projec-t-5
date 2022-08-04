@@ -1,5 +1,4 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const router = require("./routes/route");
 const mongoose = require("mongoose");
 const multer = require("multer")
@@ -8,11 +7,6 @@ const app = express();
 app.use(multer().any())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
-//------------------- Global or Application level Middleware-------------------//
-app.use(bodyParser.json());
-app.use(multer().any()); 
-
-
 
 //------------------- Connection Establishment Between Application and Database -------------------//
 
@@ -21,7 +15,6 @@ mongoose.connect("mongodb+srv://pallavi_90:eh5J7PzhYvWnStqo@cluster0.hznxhdd.mon
   )
   .then(() => console.log("MongoDb is connected"))
   .catch(err => console.log(err))
-
 
 app.use('/', router);
 
