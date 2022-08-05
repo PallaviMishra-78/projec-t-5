@@ -121,9 +121,7 @@ const isValidString = (String) => {
 const isValidPrice = (price) => {
     return /^[1-9]\d{0,7}(?:\.\d{1,2})?$/.test(price)
 }
-// const isValidSize = (sizes) => {
-//     return ["S", "XS", "M", "X", "L", "XXL", "XL"].includes(sizes);
-// }
+
 const isValidObjectsId = function (ObjectId) {
     return mongoose.Types.ObjectId.isValid(ObjectId);
 }
@@ -132,6 +130,13 @@ const validQuantity = function isInteger(value) {
     if(value < 1) return false
      if(value % 1 == 0 ) return true
 }
+
+let IsNumeric = function (input) {
+	var RE = /^-{0,1}\d*\.{0,1}\d+$/;
+	return (RE.test(input));
+}
+
+
 
 module.exports = {
     isEmptyObject,
@@ -157,5 +162,6 @@ module.exports = {
     isValidString,
     isValidPrice,
     isValidObjectsId,
-    validQuantity
+    validQuantity,
+    IsNumeric
 }

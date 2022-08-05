@@ -146,7 +146,7 @@ const updateCart = async function (req, res) {
         }
 
         if ((removeProduct != 0) && (removeProduct != 1)) {
-            return res.status(400).send({ status: false, msg: "Invalid remove product" })
+            return res.status(400).send({ status: false, msg: "remove product must be 0 or 1" })
         }
 
         const cart = cartSearch.items
@@ -173,7 +173,6 @@ const updateCart = async function (req, res) {
             }
             return res.status(400).send({ status: false, message: "Product does not found in the cart" })
         }
-
     }
     catch (error) {
         res.status(500).send({ status: false, message: error.message })
