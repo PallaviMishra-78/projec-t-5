@@ -3,6 +3,7 @@ const vfy = require('../utility/validation')
 const bcrypt = require('bcrypt'); // becrypt is used to encrypt as well comparig the given password with hash-one stored in db
 const { uploadFile } = require('../aws.config.js')
 const jwt = require('jsonwebtoken');
+const { default: mongoose } = require('mongoose');
 const saltRounds = 10;
 
 
@@ -183,11 +184,16 @@ const login = async (req, res) => {
 const getUser = async function (req, res) {
     try {
         let userId = req.params.userId
-        let user = await userModel.findById(userId)
-        if (!user) {
-            return res.status(404).send({ status: false, Message: "No such user found" })
-        }
-        return res.status(200).send({ status: true, data: user })
+        if(mongoose.Types.ObjectId.isValid(userId)){
+            let user = await userModel.findById(userId)
+            if (!user) {
+                return res.status(404).send({ status: false, Message: "No such user found" }) /// need to clarify about this doubt
+
+            }
+            return res.status(200).send({ status: true, data: user })
+        }else{
+             return res.status(400).send({status: false, message: "Invalid user Id"})
+         }
     } catch (err) {
         return res.status(500).send({ status: false, Message: err.message })
     }
@@ -287,11 +293,7 @@ const update = async (req, res) => {
                 if (!billing.pincode || !vfy.isPincodeValid(billing.pincode) || isNaN(shipping.pincode))
                     return res.status(400).send({ status: false, Message: "Plz provide a valid pincode for billing" });
                 user.address.billing.pincode = billing.pincode
-
-
-
             }
-
         }
 
         if (!vfy.isEmptyFile(files)) {

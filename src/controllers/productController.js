@@ -5,37 +5,40 @@ const mongoose = require("mongoose")
 
 
 //-----------------------------------------------------------[regex]------------------------------------------------------------------------------//
+
 const titleRegex = /^[a-zA-Z ]{2,45}$/;
 
 //------------------------------------------------------------[createproduct]---------------------------------------------------------------------//
+
 const createProduct = async (req, res) => {
     try {
         const requestBody = req.body
         console.log(requestBody) 
-        if (vfy.isEmptyObject(requestBody)) return res.status(400).send({ status: false, Message: "Invalid request parameters, Please provide Product details" })
+        if (vfy.isEmptyObject(requestBody)) return res.status(400).send({ status: false, message: "Invalid request parameters, Please provide Product details" })
         const { title, description, price, currencyId, currencyFormat, isFreeShipping, style, availableSizes, installments, isDeleted } = requestBody
 
         const files = req.files
-        if (vfy.isEmptyFile(files)) return res.status(400).send({ status: false, Message: "Please provide product's Image" });
-        if (vfy.isEmptyFile(title)) return res.status(400).send({ status: false, Message: "Please provide product's title" });
-        if (!vfy.strRegex(title)) return res.status(400).send({ status: false, msg: "Please enter title in alphabets only!" })
+        if (vfy.isEmptyFile(files)) return res.status(400).send({ status: false, message: "Please provide product's Image" });
 
-        const duplicate=await productModel.findOne({title})
-        if(duplicate) return res.status(400).send({status:false,message:`${title} product already exists`})
+        if (vfy.isEmptyFile(title)) return res.status(400).send({ status: false, message: "Please provide product's title" });
+        if (!vfy.strRegex(title)) return res.status(400).send({ status: false, message: "Please enter title in alphabets only!" })
 
-        if (vfy.isEmptyFile(description)) return res.status(400).send({ status: false, Message: "Please provide product's description" });
-        if (vfy.isEmptyFile(price)) return res.status(400).send({ status: false, Message: "Please provide product's price" });
-        if (!vfy.numberValue(price)) return res.status(400).send({ status: false, msg: "Please enter price!" });
+        const duplicate = await productModel.findOne({title})
+        if(duplicate) return res.status(400).send({status:false, message:`${title} product already exists`})
 
-        if (vfy.isEmptyFile(currencyId)) return res.status(400).send({ status: false, Message: "Please provide product's currencyId" });
-        if (currencyId !== "INR") return res.status(400).send({ status: false, msg: "Please enter currencyId in correct format" })
-        if (vfy.isEmptyFile(currencyFormat)) return res.status(400).send({ status: false, Message: "Please provide product's currency Format" });
-        if (currencyFormat !== "₹") return res.status(400).send({ status: false, msg: "Please enter currencyFormat in correct format" })
-        if (vfy.isEmptyFile(isFreeShipping)) return res.status(400).send({ status: false, Message: "Please provide product's shipping is free" });
-        if (!vfy.booleanValue(isFreeShipping)) return res.status(400).send({ status: false, msg: "Please enter isFreeShipping!" }) 
+        if (vfy.isEmptyFile(description)) return res.status(400).send({ status: false, message: "Please provide product's description" });
+        if (vfy.isEmptyFile(price)) return res.status(400).send({ status: false, message: "Please provide product's price" });
+        if (!vfy.numberValue(price)) return res.status(400).send({ status: false, message: "Please enter price!" });
 
-        if (vfy.isEmptyFile(style)) return res.status(400).send({ status: false, Message: "Please provide product's style " });
-        if (vfy.isEmptyFile(availableSizes)) return res.status(400).send({ status: false, Message: "Please provide product's available Sizes" });
+        if (vfy.isEmptyFile(currencyId)) return res.status(400).send({ status: false, message: "Please provide product's currencyId" });
+        if (currencyId !== "INR") return res.status(400).send({ status: false, message: "Please enter currencyId in correct format" })
+        if (vfy.isEmptyFile(currencyFormat)) return res.status(400).send({ status: false, message: "Please provide product's currency Format" });
+        if (currencyFormat !== "₹") return res.status(400).send({ status: false, message: "Please enter currencyFormat in correct format" })
+        if (vfy.isEmptyFile(isFreeShipping)) return res.status(400).send({ status: false, message: "Please provide product's shipping is free" });
+        if (!vfy.booleanValue(isFreeShipping)) return res.status(400).send({ status: false, message: "Please enter isFreeShipping!" }) 
+
+        if (vfy.isEmptyFile(style)) return res.status(400).send({ status: false, message: "Please provide product's style " });
+        if (vfy.isEmptyFile(availableSizes)) return res.status(400).send({ status: false, message: "Please provide product's available Sizes" });
         let availableSize
         
         if (availableSizes) {availableSize = availableSizes.toUpperCase().split(",")
@@ -45,10 +48,11 @@ const createProduct = async (req, res) => {
               }
             }
           }
-        if (vfy.isEmptyFile(installments)) return res.status(400).send({ status: false, Message: "Please provide product's available in installments " });
-        if (!vfy.numberValue(installments)) return res.status(400).send({ status: false, msg: "Please enter installments!" })
-        if (isDeleted === true || isDeleted === "") return res.status(400).send({ status: false, msg: "isDeleted must be false!" })
-        if (!vfy.acceptFileType(files[0], 'image/jpeg', 'image/jpg', 'image/png')) return res.status(400).send({ status: false, Message: "we accept jpg, jpeg or png as profile picture only" });
+        if (vfy.isEmptyFile(installments)) return res.status(400).send({ status: false, message: "Please provide product's available in installments " });
+        if (!vfy.numberValue(installments)) return res.status(400).send({ status: false, message: "Please enter installments!" })
+        if (isDeleted === true || isDeleted === "") return res.status(400).send({ status: false, message: "isDeleted must be false!" })
+        if (!vfy.acceptFileType(files[0], 'image/jpeg', 'image/jpg', 'image/png')) return res.status(400).send({ status: false, message: "we accept jpg, jpeg or png as profile picture only" });
+
         let productImage = await uploadFile(files[0])
 
         const productrequestbody = { title, description, price, currencyId, currencyFormat, isFreeShipping, productImage , style, availableSizes:availableSize, installments, isDeleted }
@@ -66,20 +70,20 @@ const createProduct = async (req, res) => {
 const getProductsById = async function(req,res){
      try{
           let productId = req.params.productId
-          if(productId){
+          // if(productId){
                if (mongoose.Types.ObjectId.isValid(productId)){
-                    const product = await productModel.findOne( {_id : productId, isDeleted: false}, {isDeleted: 0, _v:0} )
+                    const product = await productModel.findOne( {_id : productId, isDeleted: false})
                     if(product){                     
-                         return res.status(200).send({ Status:!true, Message:"Success", Data: product })
+                         return res.status(200).send({ status:true, message:"Success", data: product })
                     }else{
                          return res.status(404).send({status:false, message: "Product not found"})
                     }
                }else{
                     return res.status(400).send({ status: !true, message: "Product Id is invalid" })
                }
-          }else {
-               return res.status(400).send({ status: !true, message: "Please enter the productId" })
-          }
+          // }else {
+          //      return res.status(400).send({ status: !true, message: "Please enter the productId" })
+          // }
      }catch(error){
           return res.status(500).send({status:false, message: error.message})
      }
@@ -88,10 +92,10 @@ const getProductsById = async function(req,res){
 
  
  //-----------------------------------------[getByQuery]-----------------------------------
+
  const getByQuery = async function (req, res) {
      try {
-         let query = req.query
- 
+         let query = req.query 
  
          if (query.size) {
              let sizes = ["S", "XS", "M", "X", "L", "XXL", "XL"]
@@ -124,6 +128,7 @@ const getProductsById = async function(req,res){
 
 
  //-----------------------------------------------[updateProduct]---------------------------------------------------------
+
  const updateProduct = async function (req, res) {
     try {
         let productId = req.params.productId
@@ -253,6 +258,7 @@ const getProductsById = async function(req,res){
          let productId = req.params.productId
          if (!productId) return res.status(400).send({ status: false, message: "provide productId" })
          if (!mongoose.isValidObjectId(productId)) return res.status(400).send({ status: false, message: "invalid productId" })
+         
          let checkId = await productModel.findById({ _id: productId })
          if (!checkId) return res.status(404).send({ status: false, message: "no such product" })
          if (checkId.isDeleted == true) return res.status(404).send({ status: false, message: "product is already deleted" })
