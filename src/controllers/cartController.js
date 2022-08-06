@@ -101,52 +101,52 @@ const updateCart = async function (req, res) {
         const userId = req.params.userId;
 
         if (!vfy.isValidRequestBody(body)) {
-            return res.status(400).send({ status: false, msg: "Please provide data to update." });
+            return res.status(400).send({ status: false, message: "Please provide data to update." });
         }
 
         if (!vfy.isValidObjectId(userId)) {
-            return res.status(400).send({ status: false, msg: "Invalid parameters" });
+            return res.status(400).send({ status: false, message: "Invalid parameters" });
         }
 
         const userSearch = await userModel.findById({ _id: userId })
         if (!userSearch) {
-            return res.status(400).send({ status: false, msg: "userId does not exist" })
+            return res.status(400).send({ status: false, message: "userId does not exist" })
         }
 
         const { cartId, productId, removeProduct } = body
 
         if (!vfy.isValid(cartId)) {
-            return res.status(400).send({ status: false, msg: "CartId is required" })
+            return res.status(400).send({ status: false, message: "CartId is required" })
         }
 
         if (!vfy.isValidObjectId(cartId)) {
-            return res.status(400).send({ status: false, msg: "Invalid cartId" })
+            return res.status(400).send({ status: false, message: "Invalid cartId" })
         }
 
         if (!vfy.isValid(productId)) {
-            return res.status(400).send({ status: false, msg: "productId is required" })
+            return res.status(400).send({ status: false, message: "productId is required" })
         }
 
         if (!vfy.isValidObjectId(productId)) {
-            return res.status(400).send({ status: false, msg: "Invalid productId" })
+            return res.status(400).send({ status: false, message: "Invalid productId" })
         }
 
         const cartSearch = await cartModel.findOne({ _id: cartId })
         if (!cartSearch) {
-            return res.status(404).send({ status: false, msg: "Cart does not exist" })
+            return res.status(404).send({ status: false, message: "Cart does not exist" })
         }
 
         const productSearch = await productModel.findOne({ _id: productId })
         if (!productSearch) {
-            return res.status(404).send({ status: false, msg: "product does not exist" })
+            return res.status(404).send({ status: false, message: "product does not exist" })
         }
 
         if (productSearch.isDeleted == true) {
-            return res.status(400).send({ status: false, msg: "Product is already deleted" })
+            return res.status(400).send({ status: false, message: "Product is already deleted" })
         }
 
         if ((removeProduct != 0) && (removeProduct != 1)) {
-            return res.status(400).send({ status: false, msg: "remove product must be 0 or 1" })
+            return res.status(400).send({ status: false, message: "remove product must be 0 or 1" })
         }
 
         const cart = cartSearch.items
@@ -187,7 +187,7 @@ const getCart = async function (req, res) {
 
         //checking if the cart exist with this userId or not
         if (!vfy.isValidObjectId(userId)) {
-            return res.status(400).send({ status: false, msg: "please provide valid userId" })
+            return res.status(400).send({ status: false, message: "please provide valid userId" })
         }
         let findCart = await cartModel.findOne({ userId: userId }).populate('items.productId').select({ __v: 0 });
         if (!findCart) return res.status(404).send({ status: false, message: `No cart found with this "${userId}" userId` });
