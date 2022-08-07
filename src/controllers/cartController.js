@@ -2,13 +2,10 @@ const userModel = require("../models/userModel")
 const productModel = require("../models/productModel")
 const cartModel = require("../models/cartModel")
 const vfy = require('../utility/validation')
-const mongoose = require("mongoose")
-
 
 //<<<<<<<<<<<<<==============create cart========================>>>>>>>>>>>>>>>>//
 
 const createCart = async function (req, res) {
-
     try {
         const userId = req.params.userId
         let { quantity, productId, cartId } = req.body
@@ -91,7 +88,6 @@ const createCart = async function (req, res) {
         res.status(500).send({ status: false, data: error.message })
     }
 }
-
 
 //<<<<<<<<<<<<<==============update cart========================>>>>>>>>>>>>>>>>//
 

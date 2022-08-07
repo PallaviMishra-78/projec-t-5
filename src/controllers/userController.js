@@ -12,7 +12,7 @@ const saltRounds = 10;
 const createUser = async function (req, res) {
     try {
         const requestBody = req.body
-        
+
         if (vfy.isEmptyObject(requestBody)) return res.status(400).send({ status: false, message: "Invalid request parameters, Please provide user details" })
 
         let { fname, lname, email, phone, password, address } = requestBody
@@ -40,7 +40,7 @@ const createUser = async function (req, res) {
 
         if (vfy.isEmptyVar(address)) return res.status(400).send({ status: false, message: "Please provide address" })
         const addressObject = vfy.isValidJSONstr(address)
-        
+
         if (!addressObject) return res.status(400).send({ status: false, message: "Address json you are providing is not in a valid format 🤦‍♂️😂🤣" })
 
         let {
@@ -75,7 +75,7 @@ const createUser = async function (req, res) {
 
         // ================================= aws file upload here==========================>>
 
-        if (!vfy.acceptFileType(files[0], 'image/jpeg','image/jpg', 'image/png')) return res.status(400).send({ status: false, message: "we accept jpg, jpeg or png as profile picture only" });
+        if (!vfy.acceptFileType(files[0], 'image/jpeg', 'image/jpg', 'image/png')) return res.status(400).send({ status: false, message: "we accept jpg, jpeg or png as profile picture only" });
 
         const profilePicture = await uploadFile(files[0])
 
@@ -108,7 +108,7 @@ const login = async (req, res) => {
     try {
         // get data from body
         const data = req.body
-        
+
         if (vfy.isEmptyObject(data)) return res.status(400).send({ status: !true, message: " Login BODY must be required!" })
 
         //  de-structure data ❤️
@@ -135,14 +135,14 @@ const login = async (req, res) => {
         if (!verify) return res.status(401).send({ status: !true, message: ` Wrong Email address or Password!` })
 
         const iat = Date.now()                   // created time
-        const exp = (iat) + (1*60*60*1000)      // expairy time
+        const exp = (iat) + (60 * 1000)      // expairy time
         //  generate Token one hr
         const Token = jwt.sign({
-          userId: user._id.toString(),
-          iat: iat,
-          exp: exp
-        }, 
-        "project/productManagementGroup60",
+            userId: user._id.toString(),
+            iat: iat,
+            exp: exp
+        },
+            "project/productManagementGroup60",
         );
 
         res.status(200).send({
@@ -154,7 +154,7 @@ const login = async (req, res) => {
             }
         })
     } catch (error) {
-        res.status(500).send({status: false,message: error.message})
+        res.status(500).send({ status: false, message: error.message })
     }
 }
 
@@ -164,16 +164,15 @@ const getUser = async function (req, res) {
     try {
         let userId = req.params.userId
 
-        if(mongoose.Types.ObjectId.isValid(userId)){
+        if (mongoose.Types.ObjectId.isValid(userId)) {
             let user = await userModel.findById(userId)
             if (!user) {
-                return res.status(404).send({ status: false, message: "No such user found" }) /// need to clarify about this doubt
-
+                return res.status(404).send({ status: false, message: "No such user found" })
             }
             return res.status(200).send({ status: true, data: user })
-        }else{
-             return res.status(400).send({status: false, message: "Invalid user Id"})
-         }
+        } else {
+            return res.status(400).send({ status: false, message: "Invalid user Id" })
+        }
     } catch (err) {
         return res.status(500).send({ status: false, message: err.message })
     }
@@ -183,11 +182,8 @@ const getUser = async function (req, res) {
 
 const update = async (req, res) => {
     try {
-        //  get data from body
         const data = req.body
-        //  console.log(data)
         const files = req.files
-        console.log(files)
         const userId = req.params.userId
 
         if (vfy.isEmptyObject(data)) return res.status(400).send({ status: !true, message: " BODY must be required!" })
@@ -209,7 +205,7 @@ const update = async (req, res) => {
 
         if (!vfy.isEmptyVar(email)) {
             if (!vfy.isValidEmail(email)) return res.status(400).send({ status: !true, message: "☹️ Invalid email address!" })
-            let usedEmail = await userModel.findOne({ _id: userId, email });
+            let usedEmail = await userModel.findOne({ email });
             if (usedEmail) return res.status(400).send({ status: false, message: "This email is already registerd" });
 
             user.email = email.trim()
@@ -217,7 +213,7 @@ const update = async (req, res) => {
 
         if (!vfy.isEmptyVar(phone)) {
             if (!vfy.isValidPhone(phone)) return res.status(400).send({ status: !true, message: " Invalid phone number!" })
-            let usedMobileNumber = await userModel.findOne({ _id: userId, phone });
+            let usedMobileNumber = await userModel.findOne({ phone });
             if (usedMobileNumber) return res.status(400).send({ status: false, message: "This Mobile no. is already registerd" });
 
             user.phone = phone
@@ -257,11 +253,7 @@ const update = async (req, res) => {
 
             // billing address validation
             if (!vfy.isEmptyObject(billing)) {
-
-                if (vfy.isEmptyVar(billing.street)) {
-                    console.log(billing.street)
-                    return res.status(400).send({ status: false, message: "Plz provide a valid street for billing" })
-                }
+                if (vfy.isEmptyVar(billing.street)) return res.status(400).send({ status: false, message: "Plz provide a valid street for billing" })
                 user.address.billing.street = billing.street
 
 
