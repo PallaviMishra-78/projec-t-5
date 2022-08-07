@@ -135,7 +135,7 @@ const login = async (req, res) => {
         if (!verify) return res.status(401).send({ status: !true, message: ` Wrong Email address or Password!` })
 
         const iat = Date.now()                   // created time
-        const exp = (iat) + (60 * 1000)      // expairy time
+        const exp = (iat) + (1 * 60 * 60 * 1000)      // expairy time
         //  generate Token one hr
         const Token = jwt.sign({
             userId: user._id.toString(),
