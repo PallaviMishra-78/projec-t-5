@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: true,
             trim:true
-        }, // s3 link
+        }, 
         phone: {
             type: String,
             required: true,
@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: true,
             trim:true
-        }, // encrypted password
+        },
         address: {
             shipping: {
                 street: {

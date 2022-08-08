@@ -69,11 +69,6 @@ const createUser = async function (req, res) {
         if (!vfy.isPincodeValid(billing.pincode)) return res.status(400).send({ status: false, Message: "Plz provide a valid pincode" });
 
 
-
-
-
-
-
         //=================================Unique Db calls (Time saving)======================>>
 
         let usedEmail = await userModel.findOne({ email });
@@ -111,8 +106,6 @@ const createUser = async function (req, res) {
 }
 
 
-
-
 //<<<<<<<<<<<=============Login User============>>>>>>>>>//
 
 const login = async (req, res) => {
@@ -139,9 +132,8 @@ const login = async (req, res) => {
 
         //  vfy the password
         const verify = await bcrypt.compare(password, user.password).catch(_ => {
-
             console.log(_.message)
-            return !true
+            return false
         })
 
         if (!verify) return res.status(401).send({ status: !true, message: ` Wrong Email address or Password!` })
@@ -155,27 +147,18 @@ const login = async (req, res) => {
           exp: exp
         }, 
         "project/productManagementGroup60",
-     //     {
-     //        expiresIn: '1h'
-     //    }
-          );
+        );
 
-        //console.log(Token.userId)
-        //  all good
         res.status(200).send({
             status: true,
-            message: `User login successfull`,
+            message: `login successfull`,
             data: {
                 userId: user._id,
                 token: Token
             }
         })
     } catch (error) {
-        // console.log(error)
-        res.status(500).send({
-            status: false,
-            Message: error.message
-        })
+        res.status(500).send({status: false,message: error.message})
     }
 }
 
@@ -184,6 +167,7 @@ const login = async (req, res) => {
 const getUser = async function (req, res) {
     try {
         let userId = req.params.userId
+
         if(mongoose.Types.ObjectId.isValid(userId)){
             let user = await userModel.findById(userId)
             if (!user) {
