@@ -7,9 +7,6 @@ let cartController = require("../controllers/cartController")
 let orderController = require("../controllers/orderController")
 let {authentication,authorization_user} = require("../middleware/auth")
 
-
-
-
 //<<<<<<<<<<<<<<===============User API's=============>>>>>>>>>>>>>>>>>>>>//
 
 router.post('/register', userController.createUser)
@@ -20,7 +17,7 @@ router.put("/user/:userId/profile",authentication, authorization_user, userContr
 //<<<<<<<<<<<<<<===============[Product API's]================>>>>>>>>>>>>>>>//
 
 router.post('/products', productController.createProduct)
-router.get('/products', productController.getByQuery)
+router.get('/products', productController.getProduct)
 router.get("/products/:productId", productController.getProductsById)
 router.put('/products/:productId', productController.updateProduct)
 router.delete('/products/:productId', productController.deleteProduct)
@@ -31,7 +28,6 @@ router.post('/users/:userId/cart',authentication, authorization_user,cartControl
 router.put('/users/:userId/cart', authentication, authorization_user,cartController.updateCart )
 router.get('/users/:userId/cart',authentication, authorization_user, cartController.getCart)
 router.delete('/users/:userId/cart',authentication, authorization_user, cartController.deleteCart)
-
 
 //<<<<<<<<<<<<<<=================Order API's================>>>>>>>>>>>>>>>//
 
